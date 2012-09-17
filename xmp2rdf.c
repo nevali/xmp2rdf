@@ -199,7 +199,6 @@ process_document(xmlDoc *doc)
 					}
 					processed++;
 				}
-				return 0;
 			}
 		}
 		else if(node->ns && !strcmp((const char *) node->ns->href, "http://www.w3.org/1999/02/22-rdf-syntax-ns#") && !strcmp((const char *) node->name, "RDF"))
@@ -226,8 +225,12 @@ process_document(xmlDoc *doc)
 			fprintf(stderr, "%s: Warning: unexpected element %s within the default namespace\n", input_filename, node->name);
 		}
 	}
-	fprintf(stderr, "%s: no XMP metadata container found\n", input_filename);
-	return -1;
+	if(!processed)
+	{
+		fprintf(stderr, "%s: no XMP metadata container found\n", input_filename);
+		return -1;
+	}
+	return 0;
 }
 
 int
