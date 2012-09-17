@@ -1,0 +1,16 @@
+This is xmp2rdf, a utility for parsing XMP metadata and re-serialising it
+as somewhat more pleasant RDF.
+
+xmp2rdf uses libxml2 <http://xmlsoft.org/> and Redland <http://librdf.org/>
+in order to perform parsing and serialisation. The configure script uses
+pkg-config <http://www.freedesktop.org/wiki/Software/pkg-config> to locate
+both.
+
+If you are reading this file in a git checkout, you will need to build the
+configure script before proceeding. The autoreconf(1) utility, part of
+autoconf <http://www.gnu.org/software/autoconf/>, will do this for you:
+
+$ autoreconf -i
+$ ./configure [OPTIONS]
+$ make
+$ sudo make install
