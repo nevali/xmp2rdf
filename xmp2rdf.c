@@ -200,8 +200,9 @@ process_document(xmlDoc *doc)
 					processed++;
 				}
 			}
+			continue;
 		}
-		else if(node->ns && !strcmp((const char *) node->ns->href, "http://www.w3.org/1999/02/22-rdf-syntax-ns#") && !strcmp((const char *) node->name, "RDF"))
+		if(node->ns && !strcmp((const char *) node->ns->href, "http://www.w3.org/1999/02/22-rdf-syntax-ns#") && !strcmp((const char *) node->name, "RDF"))
 		{
 			if(processed)
 			{
@@ -215,6 +216,7 @@ process_document(xmlDoc *doc)
 				}
 				processed++;
 			}
+			continue;
 		}
 		if(node->ns && node->ns->href && node->ns->href[0])
 		{
