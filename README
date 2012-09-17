@@ -8,7 +8,13 @@ images.
 xmp2rdf uses libxml2 <http://xmlsoft.org/> and Redland <http://librdf.org/>
 in order to perform parsing and serialisation. The configure script uses
 pkg-config <http://www.freedesktop.org/wiki/Software/pkg-config> to locate
-both.
+Redland, but you may need to tell it how to find libxml2 -- either by
+specifying the installation prefix with --with-libxml2=PREFIX, or by
+setting LIBXML2_CPPFLAGS and LIBXML2_LDFLAGS environment variables
+before invoking configure. If you installed libxml2 from a package,
+you may need to install the separate development package (libxml2-dev
+on Debian, libxml2-devel on RedHat), and give the libxml2 prefix
+as /usr.
 
 If you are reading this file in a git checkout, you will need to build the
 configure script before proceeding. The autoreconf(1) utility, part of
