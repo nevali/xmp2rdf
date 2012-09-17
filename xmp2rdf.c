@@ -173,7 +173,9 @@ static int
 process_document(xmlDoc *doc)
 {
 	xmlNode *root, *node;
+	int processed;
 
+	processed = 0;
 	root = xmlDocGetRootElement(doc);
 	for(node = root; node; node = node->next)
 	{
@@ -185,25 +187,46 @@ process_document(xmlDoc *doc)
 		{
 			if(!strcmp((const char *) node->name, "xmpmeta") || !strcmp((const char *) node->name, "xapmeta"))
 			{
-				process_container(doc, node);
+				if(processed)
+				{
+					fprintf(stderr, "%s: Warning: multiple XMP metadata containers found; only the first will be processed\n", input_filename);
+				}
+				else
+				{
+					if(process_container(doc, node))
+					{
+						return -1;
+					}
+					processed++;
+				}
 				return 0;
 			}
 		}
 		else if(node->ns && !strcmp((const char *) node->ns->href, "http://www.w3.org/1999/02/22-rdf-syntax-ns#") && !strcmp((const char *) node->name, "RDF"))
 		{
-			process_rdf(doc, node);
-			return 0;
+			if(processed)
+			{
+				fprintf(stderr, "%s: Warning: multiple XMP metadata containers found; only the first will be processed\n", input_filename);
+			}
+			else
+			{
+				if(process_rdf(doc, node))
+				{
+					return -1;
+				}
+				processed++;
+			}
 		}
 		if(node->ns && node->ns->href && node->ns->href[0])
 		{
-			fprintf(stderr, "%s: unexpected element %s within the %s namespace\n", input_filename, node->name, node->ns->href);
+			fprintf(stderr, "%s: Warning: unexpected element %s within the %s namespace\n", input_filename, node->name, node->ns->href);
 		}
 		else
 		{
-			fprintf(stderr, "%s: unexpected element %s within the default namespace\n", input_filename, node->name);
+			fprintf(stderr, "%s: Warning: unexpected element %s within the default namespace\n", input_filename, node->name);
 		}
-		break;
 	}
+	fprintf(stderr, "%s: no XMP metadata container found\n", input_filename);
 	return -1;
 }
 
