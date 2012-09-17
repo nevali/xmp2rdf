@@ -114,28 +114,24 @@ rdf_init(void)
 static int
 process_rdf(xmlDoc *doc, xmlNode *rdf)
 {
-	xmlChar *p;
+	const xmlChar *p;
 	int size;
-	xmlNode *node, *nnode;
+	xmlBuffer *buf;
 
 	xmlReconciliateNs(doc, rdf);
-	for(node = doc->children; node; node = nnode)
+	buf = xmlBufferCreate();
+	if(!buf)
 	{
-		nnode = node->next;
-		if(node->type != XML_ELEMENT_NODE)
-		{
-			xmlUnlinkNode(node);
-		}
+		fprintf(stderr, "%s: failed to create buffer for XML serialisation\n", input_filename);
+		return -1;
 	}
-	xmlDocSetRootElement(doc, rdf);
-	p = NULL;
-	size = 0;
-	xmlDocDumpMemory(doc, &p, &size);
-	if(!p)
+	size = xmlNodeDump(buf, doc, rdf, 0, 0);
+	if(size == -1)
 	{
 		fprintf(stderr, "%s: failed to serialise XML to buffer\n", input_filename);
 		return -1;
 	}
+	p = xmlBufferContent(buf);
 	if(librdf_parser_parse_string_into_model(parser, (const unsigned char *) p, base, model))
 	{
 		fprintf(stderr, "%s: failed to parse RDF/XML as RDF\n", input_filename);
@@ -146,7 +142,7 @@ process_rdf(xmlDoc *doc, xmlNode *rdf)
 		fprintf(stderr, "%s: failed to serialise RDF to output file\n", input_filename);
 		return -1;
 	}
-	xmlFree(p);
+	xmlBufferFree(buf);
 	return 0;
 }
 
