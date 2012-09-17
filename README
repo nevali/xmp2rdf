@@ -1,6 +1,10 @@
 This is xmp2rdf, a utility for parsing XMP metadata and re-serialising it
 as somewhat more pleasant RDF.
 
+Today, xmp2rdf can only extract the inner RDF from an XMP sidecar. Future
+versions may well support reading embedded XMP payloads directly from
+images.
+
 xmp2rdf uses libxml2 <http://xmlsoft.org/> and Redland <http://librdf.org/>
 in order to perform parsing and serialisation. The configure script uses
 pkg-config <http://www.freedesktop.org/wiki/Software/pkg-config> to locate
